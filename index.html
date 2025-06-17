@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ViaMundi - Turismo com conforto e estilo</title>
+<!-- Google Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+<style>
+  /* Reset and basics */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f172a, #0f172a 70%, #064e3b);
+    color: #e0e7ff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  a {
+    color: #22c55e;
+    text-decoration: none;
+  }
+  a:hover, button:hover {
+    text-decoration: underline;
+  }
+  /* Container for content */
+  #app {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 24px;
+  }
+
+  header {
+    background: rgba(6, 95, 70, 0.95);
+    backdrop-filter: saturate(180%) blur(8px);
+    padding: 12px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 4px 6px rgb(0 0 0 / 0.4);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  header .logo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #84cc16;
+    user-select: none;
+    cursor: default;
+  }
+  nav {
+    display: flex;
+    gap: 24px;
+  }
+  nav button {
+    all: unset;
+    cursor: pointer;
+    font-weight: 600;
+    color: #d1fae5;
+    font-size: 1rem;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  }
+  nav button.active,
+  nav button:hover {
+    background-color: #22c55e;
+    color: #064e3b;
+    box-shadow: 0 4px 8px rgb(34 197 94 / 0.6);
+  }
+  /* Sections */
+  section {
+    margin-top: 32px;
+  }
+  h1, h2, h3 {
+    color: #a7f3d0;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  p {
+    line-height: 1.5;
+    color: #d1fae5cc;
+    font-size: 1rem;
+  }
+
+  /* About Section */
+  #about .about-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    align-items: center;
+  }
+  #about .text {
+    flex: 1 1 320px;
+  }
+  #about img {
+    flex: 1 1 320px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgb(8 146 117 /0.7);
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Packages Section */
+  #packages .packages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+  }
+  .package-card {
+    background: rgba(72, 187, 120, 0.15);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 14px rgb(34 197 94 / 0.35);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease;
+  }
+  .package-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 30px rgb(34 197 94 / 0.6);
+  }
+  .package-card h3 {
+    margin-bottom: 12px;
+    font-size: 1.25rem;
+  }
+  .package-card p {
+    flex-grow: 1;
+    margin-bottom: 20px;
+    color: #d1fae5cc;
+  }
+  .package-details {
+    font-size: 0.9rem;
+    color: #9ae6b4;
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+  .package-price {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #4ade80;
+    margin-bottom: 16px;
+  }
+  .package-card button {
+    background: #22c55e;
+    border: none;
+    padding: 12px 0;
+    font-size: 1rem;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #064e3b;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .package-card button:hover {
+    background-color: #16a34a;
+  }
+
+  /* Cart Section */
+  #cart {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  #cart table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(5, 80, 56, 0.25);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  #cart th, #cart td {
+    padding: 16px 12px;
+    text-align: left;
+    color: #d9f99d;
+    font-weight: 600;
+  }
+  #cart th {
+    background: #166534;
+  }
+  #cart tbody tr:not(:last-child) {
+    border-bottom: 1px solid #4d7c0f;
+  }
+  #cart tbody tr:hover {
+    background-color: rgba(132, 204, 22, 0.3);
+  }
+  #cart .remove-btn {
+    color: #dc2626;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0;
+  }
+  #cart .remove-btn:hover {
+    color: #b91c1c;
+  }
+  #cart-footer {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #d1fae5;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+  #cart-footer button {
+    background-color: #22c55e;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 16px;
+    font-weight: 700;
+    color: #064e3b;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #cart-footer button:hover {
+    background-color: #16a34a;
+  }
+
+  /* Payment Section inside Cart */
+  #payment-section {
+    margin-top: 40px;
+    padding: 24px;
+    background: rgba(5, 80, 56, 0.2);
+    border-radius: 16px;
+  }
+  #payment-section h3 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #a7f3d0;
+  }
+  #payment-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #d1fae5cc;
+  }
+  #payment-form input, #payment-form select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    border: none;
+    background-color: #064e3b;
+    color: #d1fae5e0;
+    font-size: 1rem;
+  }
+  #payment-form input::placeholder {
+    color: #94a3b8;
+  }
+  #payment-form button {
+    background-color: #22c55e;
+    border: none;
+    padding: 14px 0;
+    font-weight: 700;
+    color: #064e3b;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1.1rem;
+  }
+  #payment-form button:hover {
+    background-color: #16a34a;
+  }
+  /* Feedback message */
+  #payment-feedback {
+    margin-top: 16px;
+    font-weight: 700;
+    color: #84cc16;
+    text-align: center;
+  }
+
+  /* Contact Section */
+  #contact .contact-list {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .contact-item {
+    background: rgba(6, 95, 70, 0.85);
+    border-radius: 20px;
+    padding: 24px;
+    width: 220px;
+    text-align: center;
+    color: #d1fae5;
+    box-shadow: 0 8px 16px rgb(34 197 94 / 0.45);
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  .contact-item:hover {
+    background: #22c55e;
+    color: #064e3b;
+  }
+  .contact-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    color: inherit;
+  }
+
+  /* Responsive rules */
+  @media (max-width: 768px) {
+    #packages .packages-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="logo" tabindex="0" aria-label="ViaMundi turismo com ônibus">ViaMundi</div>
+    <nav aria-label="Navegação principal">
+      <button type="button" data-page="home" aria-current="page">Início</button>
+      <button type="button" data-page="about">Sobre a Empresa</button>
+      <button type="button" data-page="packages">Pacotes</button>
+      <button type="button" data-page="cart">Carrinho</button>
+      <button type="button" data-page="contact">Contatos</button>
+    </nav>
+  </header>
+
+  <main role="main" aria-live="polite">
+    <!-- Home / Landing -->
+    <section id="home" hidden>
+      <h1>ViaMundi - Turismo com o melhor conforto e estilo</h1>
+      <p>Somos de Maringá, de onde saem nossos ônibus para buscar pessoas de todo o Brasil. Nosso principal destino turístico é Foz do Iguaçu, com opções acessíveis para todas as classes sociais.</p>
+      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/5cafa0c9-9389-4076-b67c-934921e43f76.png" alt="Imagem de um ônibus moderno de turismo da ViaMundi em estrada panorâmica" style="width:100%; border-radius:16px; box-shadow: 0 8px 25px #10b981bb;" />
+    </section>
+
+    <!-- About -->
+    <section id="about" hidden>
+      <h2>Sobre a ViaMundi</h2>
+      <div class="about-content">
+        <div class="text">
+          <p>A ViaMundi é uma empresa premiada, especializada em viagens de ônibus. Com mais de 15 anos no mercado, prezamos pela segurança, conforto, pontualidade e atendimento de excelência. Nossa frota é moderna, equipada com tecnologia para tornar sua viagem mais agradável.</p>
+          <p>Temos compromisso com a sustentabilidade e valorizamos a experiência do cliente desde o primeiro contato até o destino final.</p>
+          <h3>Nossos Valores</h3>
+          <ul>
+            <li>Segurança e Confiabilidade</li>
+            <li>Conforto e Tecnologia</li>
+            <li>Atendimento Personalizado</li>
+            <li>Sustentabilidade Ambiental</li>
+            <li>Inovação e Transparência</li>
+          </ul>
+        </div>
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/c3a5750d-4d77-4046-a87c-bad7fdc2bb66.png" alt="Fotografia da equipe ViaMundi feliz e unida em frente a um ônibus" />
+      </div>
+    </section>
+
+    <!-- Packages -->
+    <section id="packages" hidden>
+      <h2>Pacotes de Viagem para Foz do Iguaçu e Região</h2>
+      <div class="packages-grid" role="list" aria-label="Lista de pacotes turísticos">
+        <!-- Package cards dynamically injected -->
+      </div>
+    </section>
+
+    <!-- Cart -->
+    <section id="cart" hidden>
+      <h2>Seu Carrinho</h2>
+      <div id="cart-content">
+        <!-- Cart content rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" hidden>
+      <h2>Contato e Redes Sociais</h2>
+      <p>Entre em contato conosco através de nossos canais oficiais. Estamos presentes para facilitar sua comunicação e oferecer suporte.</p>
+      <div class="contact-list" role="list">
+        <div class="contact-item" role="listitem">
+          <span class="material-icons contact-icon" aria-hidden="true">telegram</span>
+          <h3>Telegram</h3>
+          <a href="https://t.me/viamundi" target="_blank" rel="noopener noreferrer" aria-label="Acessar Telegram ViaMundi">https://t.me/viamundi</a>
+        </div>
+        <div class="contact-item" role="listitem">
+          <span class="material-icons contact-icon" aria-hidden="true">whatsapp</span>
+          <h3>WhatsApp Business</h3>
+          <a href="https://wa.me/559999999999" target="_blank" rel="noopener noreferrer" aria-label="Acessar WhatsApp Business ViaMundi">+55 99 99999-9999</a>
+        </div>
+        <div class="contact-item" role="listitem">
+          <span class="material-icons contact-icon" aria-hidden="true">facebook</span>
+          <h3>Facebook</h3>
+          <a href="https://facebook.com/viamundi" target="_blank" rel="noopener noreferrer" aria-label="Acessar Facebook ViaMundi">facebook.com/viamundi</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  // State for SPA navigation
+  const pages = ['home', 'about', 'packages', 'cart', 'contact'];
+  const navButtons = document.querySelectorAll('nav button');
+  const sections = {};
+  pages.forEach(page => sections[page] = document.getElementById(page));
+  // Set initial page
+  let currentPage = 'home';
+
+  // Cart state
+  let cart = [];
+
+  // Base data and costs:
+  const DISTANCE_KM = 600; // Maringá to Foz do Iguaçu (one way), so round trip 1200km
+  const ROUND_TRIP_DISTANCE = DISTANCE_KM * 2;
+
+  const BUS_COST_PER_KM = 0.50; // R$0,50 per km
+
+  const HOTEL_COSTS = {
+    economico: 100,
+    intermediario: 200,
+    luxo: 400,
+  };
+
+  const ALIMENTACAO_COSTS = {
+    economico: 30,
+    intermediario: 50,
+    luxo: 100,
+  };
+
+  // Create packages for Foz do Iguaçu based on duration, hotel, meals etc.
+  // Each package: {id, title, description, details (string), price (number), image}
+
+  // Helper function to calculate price
+  function calculatePrice(nights, hotelCategory, mealsPerDay, mealsCategory) {
+    const hotelCost = HOTEL_COSTS[hotelCategory] * nights;
+    const mealsCost = ALIMENTACAO_COSTS[mealsCategory] * mealsPerDay * nights;
+    const busCost = ROUND_TRIP_DISTANCE * BUS_COST_PER_KM;
+    return +(hotelCost + mealsCost + busCost).toFixed(2);
+  }
+
+  // Define packages
+  const packagesData = [
+    {
+      id: 'pac1',
+      title: 'Foz do Iguaçu Econômico - 3 dias',
+      description: 'Tour básico com hotel econômico, refeições simples e transporte em ônibus confortável.',
+      nights: 2,
+      hotelCategory: 'economico',
+      mealsPerDay: 2,
+      mealsCategory: 'economico',
+      image: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/448926f1-bfed-4cc5-994c-88beaa70264d.png',
+    },
+    {
+      id: 'pac2',
+      title: 'Foz do Iguaçu Intermediário - 5 dias',
+      description: 'Tour completo com hotel intermediário, refeições em restaurantes e transporte confortável.',
+      nights: 4,
+      hotelCategory: 'intermediario',
+      mealsPerDay: 3,
+      mealsCategory: 'intermediario',
+      image: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/bace4a80-d705-43e7-90cc-62b0e45a475d.png',
+    },
+    {
+      id: 'pac3',
+      title: 'Foz do Iguaçu Luxo - 3 dias',
+      description: 'Experiência premium com hotel de luxo, refeições gourmet e transporte em ônibus de alto padrão.',
+      nights: 2,
+      hotelCategory: 'luxo',
+      mealsPerDay: 3,
+      mealsCategory: 'luxo',
+      image: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/7e44e712-e256-44e9-b036-427e5d330c17.png',
+    },
+    {
+      id: 'pac4',
+      title: 'Foz do Iguaçu Econômico - 1 dia',
+      description: 'Passeio rápido para Foz do Iguaçu com ônibus, almoço simples incluso e visita às principais atrações.',
+      nights: 0,
+      hotelCategory: 'economico',
+      mealsPerDay: 1,
+      mealsCategory: 'economico',
+      image: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/413c4cdc-ef00-4c22-b4a1-9e71b2385294.png',
+    },
+    {
+      id: 'pac5',
+      title: 'Foz do Iguaçu Intermediário - 3 dias',
+      description: 'Passeio de 3 dias com acomodação confortável e refeições completas incluídas.',
+      nights: 2,
+      hotelCategory: 'intermediario',
+      mealsPerDay: 3,
+      mealsCategory: 'intermediario',
+      image: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/c5649b5e-5123-4352-932a-30db32f570ff.png',
+    },
+    {
+      id: 'pac6',
+      title: 'Pacote Família Econômico - 5 dias',
+      description: 'Pacote especial para família com hotel econômico, 3 refeições por dia e transporte confortável.',
+      nights: 4,
+      hotelCategory: 'economico',
+      mealsPerDay: 3,
+      mealsCategory: 'economico',
+      image: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ed142f9e-70cc-4f38-930f-06c85119efe9.png',
+    }
+  ];
+
+  // Calculate price on all packages
+  packagesData.forEach(pkg => {
+    pkg.price = calculatePrice(pkg.nights, pkg.hotelCategory, pkg.mealsPerDay, pkg.mealsCategory);
+    // Compose details string dynamically for UI
+    pkg.details = `${pkg.nights} noite(s) em hotel ${pkg.hotelCategory}, ${pkg.mealsPerDay} refeição(ões) por dia, transporte de ônibus ida e volta (${ROUND_TRIP_DISTANCE} km).`;
+  });
+
+  // Cart DOM references
+  const packagesGrid = document.querySelector('#packages .packages-grid');
+  const cartContent = document.getElementById('cart-content');
+  const cartStorageKey = 'viamundi_cart';
+
+  // Load cart from local storage
+  function loadCart() {
+    const stored = localStorage.getItem(cartStorageKey);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          cart = parsed;
+        }
+      } catch (e) {
+        cart = [];
+      }
+    }
+  }
+  // Save cart in local storage
+  function saveCart() {
+    localStorage.setItem(cartStorageKey, JSON.stringify(cart));
+  }
+
+  // Render Packages
+  function createPackageCard(pkg) {
+    const card = document.createElement('article');
+    card.className = 'package-card';
+    card.setAttribute('role', 'listitem');
+    card.innerHTML = `
+      <img src="${pkg.image}" alt="Imagem do pacote de viagem: ${pkg.title}" style="width:100%; border-radius: 16px; margin-bottom: 16px; box-shadow: 0 6px 15px rgb(34 197 94 / 0.6);" />
+      <h3>${pkg.title}</h3>
+      <p class="package-details">${pkg.details}</p>
+      <p>${pkg.description}</p>
+      <div class="package-price" aria-label="Preço do pacote">${formatPrice(pkg.price)}</div>
+      <button type="button" aria-label="Adicionar ${pkg.title} ao carrinho">Adicionar ao Carrinho</button>
+    `;
+    const btn = card.querySelector('button');
+    btn.addEventListener('click', () => {
+      addToCart(pkg.id);
+    });
+    return card;
+  }
+
+  function renderPackages() {
+    if (!packagesGrid) return;
+    packagesGrid.innerHTML = '';
+    packagesData.forEach(pkg => {
+      const card = createPackageCard(pkg);
+      packagesGrid.appendChild(card);
+    });
+  }
+
+  // Cart management functions
+  function addToCart(packageId) {
+    const pkg = packagesData.find(p => p.id === packageId);
+    if (!pkg) return;
+    const existing = cart.find(item => item.id === packageId);
+    if (existing) {
+      existing.quantity++;
+    } else {
+      cart.push({...pkg, quantity: 1});
+    }
+    saveCart();
+    if (currentPage === 'cart') renderCart();
+    alert(`Pacote "${pkg.title}" adicionado ao carrinho!`);
+  }
+  function removeFromCart(packageId) {
+    cart = cart.filter(item => item.id !== packageId);
+    saveCart();
+    renderCart();
+  }
+  function updateQuantity(packageId, quantity) {
+    const item = cart.find(i => i.id === packageId);
+    if (item) {
+      item.quantity = quantity > 0 ? quantity : 1;
+      saveCart();
+      renderCart();
+    }
+  }
+  function calculateTotal() {
+    return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  }
+
+  // Format price for BRL currency
+  function formatPrice(value) {
+    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  // Render Cart content with payment
+  function renderCart() {
+    if (!cartContent) return;
+    if (cart.length === 0) {
+      cartContent.innerHTML = '<p>Seu carrinho está vazio. Explore nossos pacotes para adicionar.</p>';
+      return;
+    }
+    const table = document.createElement('table');
+    table.setAttribute('aria-label', 'Tabela de itens no carrinho');
+    const thead = document.createElement('thead');
+    thead.innerHTML = `
+      <tr><th>Pacote</th><th>Preço Unitário</th><th>Quantidade</th><th>Subtotal</th><th>Remover</th></tr>
+    `;
+    table.appendChild(thead);
+    const tbody = document.createElement('tbody');
+    cart.forEach(item => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${item.title}</td>
+        <td>${formatPrice(item.price)}</td>
+        <td>
+          <input type="number" aria-label="Quantidade de ${item.title}" min="1" value="${item.quantity}" style="width: 60px; border-radius: 12px; border: none; padding: 6px; text-align: center;"/>
+        </td>
+        <td>${formatPrice(item.price * item.quantity)}</td>
+        <td><button aria-label="Remover ${item.title} do carrinho" class="remove-btn">&times;</button></td>
+      `;
+      const qtyInput = tr.querySelector('input[type=number]');
+      qtyInput.addEventListener('change', e => {
+        let val = Number(e.target.value);
+        if (Number.isNaN(val) || val < 1) val = 1;
+        updateQuantity(item.id, val);
+      });
+      const removeBtn = tr.querySelector('.remove-btn');
+      removeBtn.addEventListener('click', () => removeFromCart(item.id));
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+
+    // Total and Payment form
+    const footer = document.createElement('div');
+    footer.id = 'cart-footer';
+    footer.innerHTML = `
+      <div>Total: <strong>${formatPrice(calculateTotal())}</strong></div>
+      <button id="proceed-payment-btn" type="button" aria-label="Ir para pagamento">Ir para Pagamento</button>
+    `;
+
+    cartContent.innerHTML = '';
+    cartContent.appendChild(table);
+    cartContent.appendChild(footer);
+
+    const paymentSection = document.createElement('div');
+    paymentSection.id = 'payment-section';
+    cartContent.appendChild(paymentSection);
+
+    document.getElementById('proceed-payment-btn').addEventListener('click', () => {
+      renderPaymentForm();
+    });
+  }
+
+  // Payment Form Simulation
+  function renderPaymentForm() {
+    const paymentSection = document.getElementById('payment-section');
+    if (!paymentSection) return;
+    if (cart.length === 0) {
+      paymentSection.innerHTML = '<p>Seu carrinho está vazio. Não há o que pagar.</p>';
+      return;
+    }
+    paymentSection.innerHTML = `
+      <h3>Pagamento</h3>
+      <form id="payment-form" aria-label="Formulário de pagamento">
+        <label for="cardName">Nome no Cartão</label>
+        <input type="text" id="cardName" name="cardName" required placeholder="Nome Completo" autocomplete="name" />
+        <label for="cardNumber">Número do Cartão</label>
+        <input type="text" id="cardNumber" name="cardNumber" required placeholder="0000 0000 0000 0000" pattern="\\d{16}" maxlength="19" inputmode="numeric" />
+        <label for="expDate">Validade</label>
+        <input type="month" id="expDate" name="expDate" required min="2023-01" />
+        <label for="cvv">CVV</label>
+        <input type="text" id="cvv" name="cvv" required placeholder="123" pattern="\\d{3}" maxlength="3" inputmode="numeric" />
+        <button type="submit">Pagar ${formatPrice(calculateTotal())}</button>
+      </form>
+      <div id="payment-feedback" role="alert" aria-live="assertive"></div>
+    `;
+    const form = document.getElementById('payment-form');
+    const feedback = document.getElementById('payment-feedback');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      feedback.style.color = '#84cc16';
+      feedback.textContent = 'Processando pagamento...';
+      setTimeout(() => {
+        feedback.textContent = 'Pagamento autorizado com sucesso! Obrigado por escolher a ViaMundi.';
+        cart = [];
+        saveCart();
+        renderCart();
+      }, 2300);
+    });
+  }
+
+  // SPA Navigation
+  function showPage(page) {
+    if (!pages.includes(page)) return;
+    pages.forEach(p => {
+      sections[p].hidden = p !== page;
+    });
+    navButtons.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.page === page);
+      btn.setAttribute('aria-current', btn.dataset.page === page ? 'page' : 'false');
+    });
+    currentPage = page;
+    if (page === 'packages') renderPackages();
+    if (page === 'cart') renderCart();
+  }
+  navButtons.forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page)));
+
+  // Initialize
+  loadCart();
+  showPage('home');
+})();
+</script>
+</body>
+</html>
+
